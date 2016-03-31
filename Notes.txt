@@ -1,0 +1,17 @@
+Some notes on this code
+
+Child collection (for example, Shops in Merchant.cs) are declared as IEnumerable to prevent consumer to add/remove shops directly, bypassing the aggregate.
+This property exposes the inner (protected) property (again, _shops in Merchant.cs), which is itself a collection. This property is protected so that EF can map it.
+
+Next the tricky part.
+
+To get a correct mapping of the colletion, a new extension method has been added (EntityTypeConfigurationEx.cs), which internally replaces the reference to IEnumerable<> with ICollection, 
+so that EntityFramework can map the property, even if it is defined as IEnumerable. The code internally uses nuget package DelegateDecompiler (https://github.com/hazzik/DelegateDecompiler)
+
+Still some work to do, then: to successfully use expressions with these properties in queries, we have to dynamically translate IEnumerable<> into ICollection<>; this is done with the other 
+extension method (Include, again in EntityTypeConfigurationEx.cs).
+
+A final step to allow for these properties as search condition: a call to .Decompile() must be added to allow for translation of IEnumerable<> into ICollection<> when it is used as filter
+(eg .Where(m => m.Shops.Any()))
+
+Credits to these tricks & suggestions to hazzik and Jimmy Bogart

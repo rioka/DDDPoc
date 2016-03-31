@@ -23,7 +23,7 @@ namespace DDDPoC.Infrastructure.Persistence.EF
     }
 
     /// <summary>
-    /// Enable IEnumerable nito HasKey
+    /// Extend HasMany to handle IEnumerable
     /// </summary>
     /// <typeparam name="TEntityType">Type of the configured entity</typeparam>
     /// <typeparam name="TTargetEntity">TYpe of the target entity</typeparam>
